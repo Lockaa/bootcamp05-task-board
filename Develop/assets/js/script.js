@@ -1,7 +1,7 @@
 // Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
-
+const submitTaskButtonEl = $('#add-tasks');
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
 
@@ -19,6 +19,25 @@ function renderTaskList() {
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
+    
+    const taskTitle=$('#taskTitle').val();
+    const taskDueDate=$('#taskDueDate').val();
+    const taskDescription=$('#taskDescription').val();
+    
+    
+    // Close/hide the modal
+    $('#formModal').modal('hide');
+
+    const taskInfo = {
+        title:taskTitle,
+        dueDate:taskDueDate,
+        description:taskDescription
+    };
+
+    // For debug
+
+    console.log(taskInfo);
+
 
 }
 
@@ -36,3 +55,6 @@ function handleDrop(event, ui) {
 $(document).ready(function () {
 
 });
+
+// Event listener on AddTasks button on Modal
+submitTaskButtonEl.on('click', handleAddTask);
