@@ -14,3 +14,9 @@ body {
 .task-card:hover {
   cursor: grab;
 }
+
+/* Added for cards to overlap and visible on swim lanes */
+.ui-draggable{
+  z-index:100;
+  opacity: 1.0;
+}
