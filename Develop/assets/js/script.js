@@ -2,11 +2,11 @@
 // let taskList = JSON.parse(localStorage.getItem("tasks"));
 // let nextId = JSON.parse(localStorage.getItem("nextId"));
 const submitTaskButtonEl = $('#add-tasks');
-const toDoCardsEl = $('#todo-cards');
-const inProgressCardsEl = $('#in-progress');
-const doneCardsEl = $('#done');
+// const toDoCardsEl = $('#todo-cards');
+// const inProgressCardsEl = $('#in-progress');
+// const doneCardsEl = $('#done');
 let taskList = [];
-
+let cardsSwimLaneEl = '';
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
     return "ID-" + new Date().getTime();
@@ -73,9 +73,18 @@ function createTaskCard(task) {
     // Append Card Body to Card El
     cardEl.append(cardBodyEl);
 
-    // Append Card to ToDo Swim Lane
+    // Append Cards to respective swinlane
+    const taskStatus = task.status;
 
-    toDoCardsEl.append(cardEl);
+    if(taskStatus === 'todo'){
+        cardsSwimLaneEl = $('#todo-cards');
+    }else if(taskStatus === 'in-progress'){
+        cardsSwimLaneEl = $('#in-progress-cards');
+    }else{
+        cardsSwimLaneEl = $('#done-cards');
+    }
+
+    cardsSwimLaneEl.append(cardEl);
     // Make cards draggable
     $('.task-card').draggable();
 
@@ -119,7 +128,7 @@ function handleAddTask(event) {
         title: taskTitle,
         dueDate: taskDueDate,
         description: taskDescription,
-        status: 'To Do'
+        status: 'todo'
     };
 
     // Check if taskList Array exists in Local Storage
@@ -155,11 +164,10 @@ function handleDrop(event, ui) {
         if (id === draggedElementId) {
             // update status
             taskRef.status = droppedSwimLaneEl;
-            // if done update the card  background
+            // if dropped into done swimlane, update the card  background
             if (droppedSwimLaneEl === 'done') {
                 // find dragged Element by data attribute data-id
                 const draggedElement = $(`[data-id=${draggedElementId}]`)
-                console.log(draggedElement);
                 // remove class that begins with bg
                 $(draggedElement).removeClass(function (index, className) {
                     return (className.match(/\bbg-\S+/g) || []).join(' ');
@@ -176,6 +184,7 @@ function handleDrop(event, ui) {
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
+
 
 });
 
