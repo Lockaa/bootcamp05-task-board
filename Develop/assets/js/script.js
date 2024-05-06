@@ -1,10 +1,11 @@
 // Retrieve tasks and nextId from localStorage
-let taskList = JSON.parse(localStorage.getItem("tasks"));
-let nextId = JSON.parse(localStorage.getItem("nextId"));
+// let taskList = JSON.parse(localStorage.getItem("tasks"));
+// let nextId = JSON.parse(localStorage.getItem("nextId"));
 const submitTaskButtonEl = $('#add-tasks');
 const toDoCardsEl = $('#todo-cards');
 const inProgressCardsEl = $('#in-progress');
 const doneCardsEl = $('#done');
+let taskList = [];
 
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
@@ -76,16 +77,16 @@ function createTaskCard(task) {
 
     toDoCardsEl.append(cardEl);
     // Make cards draggable
-    $('.task-card').draggable({
-        // On drag call function handleDrop
-        drag: handleDrop
-    });
+    $('.task-card').draggable();
+
     // Make lanes droppable
     $('#in-progress').droppable({
         accept: ".task-card",
+        drop: handleDrop
     });
     $('#done').droppable({
         accept: ".task-card",
+        drop: handleDrop
     });
 
 }
@@ -112,7 +113,7 @@ function handleAddTask(event) {
 
     // Close the modal
     $('#formModal').modal('hide');
-
+    // Define the taskInfo object
     const taskInfo = {
         id: taskID,
         title: taskTitle,
@@ -128,7 +129,6 @@ function handleAddTask(event) {
         taskList.push(taskInfo);
         localStorage.setItem('taskList', JSON.stringify(taskList));
     } else {
-        let taskList = [];
         taskList.push(taskInfo);
         localStorage.setItem('taskList', JSON.stringify(taskList));
     }
@@ -143,9 +143,36 @@ function handleDeleteTask(event) {
 
 // Todo: create a function to handle dropping a task into a new status lane
 function handleDrop(event, ui) {
-    const dropTaskID = ($(event.target).attr('data-id'));
-
+    // Dragged Element Id
+    const draggedElementId = ui.draggable.attr('data-id');
+    // Retrieve the list of tasks from local storage
+    taskList = JSON.parse(localStorage.getItem('taskList'))
+    // Get id of dropped container where element was dragged into
+    let droppedSwimLaneEl = ($(this).attr("id"));
+    for (i = 0; i < taskList.length; i++) {
+        const taskRef = taskList[i];
+        const id = taskRef.id;
+        if (id === draggedElementId) {
+            // update status
+            taskRef.status = droppedSwimLaneEl;
+            // if done update the card  background
+            if (droppedSwimLaneEl === 'done') {
+                // find dragged Element by data attribute data-id
+                const draggedElement = $(`[data-id=${draggedElementId}]`)
+                console.log(draggedElement);
+                // remove class that begins with bg
+                $(draggedElement).removeClass(function (index, className) {
+                    return (className.match(/\bbg-\S+/g) || []).join(' ');
+                });
+                // add class 'bg-light'
+                $(draggedElement).addClass('bg-light');
+            }
+        }
+    }
+    localStorage.setItem('taskList', JSON.stringify(taskList));
 }
+
+
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
