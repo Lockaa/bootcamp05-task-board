@@ -1,12 +1,10 @@
-// Retrieve tasks and nextId from localStorage
-// let taskList = JSON.parse(localStorage.getItem("tasks"));
-// let nextId = JSON.parse(localStorage.getItem("nextId"));
+// Get reference of add tasks button from modal 
 const submitTaskButtonEl = $('#add-tasks');
-// const toDoCardsEl = $('#todo-cards');
-// const inProgressCardsEl = $('#in-progress');
-// const doneCardsEl = $('#done');
-let taskList = [];
+// Get reference of close icon from modal
+const closeButtonEl = $('.close');
 let cardsSwimLaneEl = '';
+const swimLanesEl = $('.swim-lanes');
+
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
     return "ID-" + new Date().getTime();
@@ -19,12 +17,21 @@ function createTaskCard(task) {
 
     const dueDate = dayjs(task.dueDate).format('YYYY-MM-DD')
     const currentDate = dayjs().format('YYYY-MM-DD')
+    const taskStatus = task.status;
     let cardElClass = ''
-
+    // Set card class based on dueDate and task status
     if (dueDate < currentDate) {
-        cardElClass = 'card text-dark text-center bg-danger mb-3 task-card'
+        if (taskStatus === 'done') {
+            cardElClass = 'card text-dark text-center bg-light mb-3 task-card'
+        } else {
+            cardElClass = 'card text-dark text-center bg-danger mb-3 task-card'
+        }
     } else if (dueDate === currentDate) {
-        cardElClass = 'card text-dark text-center bg-warning mb-3 task-card'
+        if (taskStatus === 'done') {
+            cardElClass = 'card text-dark text-center bg-light mb-3 task-card'
+        } else {
+            cardElClass = 'card text-dark text-center bg-warning mb-3 task-card'
+        }
     } else {
         cardElClass = 'card text-dark text-center bg-light mb-3 task-card'
     }
@@ -73,35 +80,35 @@ function createTaskCard(task) {
     // Append Card Body to Card El
     cardEl.append(cardBodyEl);
 
-    // Append Cards to respective swinlane
-    const taskStatus = task.status;
-
-    if(taskStatus === 'todo'){
+    // Get swimlane based on task status
+    if (taskStatus === 'todo') {
         cardsSwimLaneEl = $('#todo-cards');
-    }else if(taskStatus === 'in-progress'){
+    } else if (taskStatus === 'in-progress') {
         cardsSwimLaneEl = $('#in-progress-cards');
-    }else{
+    } else {
         cardsSwimLaneEl = $('#done-cards');
     }
 
+    // Append card to respective swimlane
     cardsSwimLaneEl.append(cardEl);
     // Make cards draggable
     $('.task-card').draggable();
-
-    // Make lanes droppable
-    $('#in-progress').droppable({
-        accept: ".task-card",
-        drop: handleDrop
-    });
-    $('#done').droppable({
-        accept: ".task-card",
-        drop: handleDrop
-    });
 
 }
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
+    taskList = JSON.parse(localStorage.getItem('taskList'));
+
+    if (taskList !== null) {
+        for (let i = 0; i < taskList.length; i++) {
+            const task = taskList[i];
+            createTaskCard(task);
+        }
+    }
+
+    // Make cards draggable
+    $('.task-card').draggable();
 
 }
 
@@ -138,6 +145,7 @@ function handleAddTask(event) {
         taskList.push(taskInfo);
         localStorage.setItem('taskList', JSON.stringify(taskList));
     } else {
+        let taskList = [];
         taskList.push(taskInfo);
         localStorage.setItem('taskList', JSON.stringify(taskList));
     }
@@ -147,6 +155,29 @@ function handleAddTask(event) {
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
+    // Traverse DOM until Card Element is reached
+    const buttonEl = $(event.target)
+    const bodyEl = $(buttonEl.parent());
+    const cardEl = $(bodyEl.parent());
+    // Retrieve ID before removing the card
+    const cardElId = cardEl.attr('data-id');
+    // Remove card element
+    cardEl.remove();
+    // Remove the task object from local storage array
+    taskList = JSON.parse(localStorage.getItem('taskList'));
+    if (taskList !== null) {
+        for (let i = 0; i < taskList.length; i++) {
+            const removeTaskRef = taskList[i];
+            const arrayIndex = i;
+            if (removeTaskRef.id === cardElId) {
+                taskList = taskList.filter(function (el) {
+                    return el.id !== cardElId;
+                })
+                localStorage.setItem('taskList', JSON.stringify(taskList));
+            }
+        }
+    }
+
 
 }
 
@@ -185,8 +216,31 @@ function handleDrop(event, ui) {
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
 
+    // call function to render tasks
+    renderTaskList();
+
+    // Make lanes droppable
+    $('#in-progress').droppable({
+        accept: ".task-card",
+        drop: handleDrop
+    });
+    $('#done').droppable({
+        accept: ".task-card",
+        drop: handleDrop
+    });
+
+    // Event listener on AddTasks button on Modal
+    submitTaskButtonEl.on('click', handleAddTask);
+
+    // Event listener to close modal on click of close button
+    closeButtonEl.on('click', () => {
+        $('#formModal').modal('hide');
+    })
+
+    //Delegated event listener to parent element 'task-card'
+    swimLanesEl.on('click', '.btn-danger', handleDeleteTask)
+
+
+
 
 });
-
-// Event listener on AddTasks button on Modal
-submitTaskButtonEl.on('click', handleAddTask);
