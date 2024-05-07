@@ -1,5 +1,5 @@
-// Get reference of add tasks button from modal 
-const submitTaskButtonEl = $('#add-tasks');
+// Get reference of Save button from modal 
+const saveTaskButtonEl = $('#add-tasks');
 // Get reference of close icon from modal
 const closeButtonEl = $('.close');
 let cardsSwimLaneEl = '';
@@ -229,8 +229,8 @@ $(document).ready(function () {
         drop: handleDrop
     });
 
-    // Event listener on AddTasks button on Modal
-    submitTaskButtonEl.on('click', handleAddTask);
+    // Event listener on Save button on Modal
+    saveTaskButtonEl.on('click', handleAddTask);
 
     // Event listener to close modal on click of close button
     closeButtonEl.on('click', () => {
