@@ -19,3 +19,6 @@ THEN the saved tasks persist
 This assignment was a mess, and I know I didn't 'finish' it, but I'm not getting anywhere with it, and it's just not worth the extra stress
 
 ![alt text](./screenshot.png)
+
+deploy link:
+https://lockaa.github.io/module05-task-board/
