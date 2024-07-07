@@ -20,3 +20,6 @@ This assignment was a mess, and I know I didn't 'finish' it, but I'm not getting
 
 ![alt text](./screenshot.png)
 
+deploy link:
+https://lockaa.github.io/module05-task-board/
+
