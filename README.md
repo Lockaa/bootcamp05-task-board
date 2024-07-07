@@ -15,9 +15,6 @@ THEN the task is removed from the task board and will not be added back after re
 WHEN I refresh the page
 THEN the saved tasks persist
 
-# comments
-This assignment was a mess, and I know I didn't 'finish' it, but I'm not getting anywhere with it, and it's just not worth the extra stress
-
 ![alt text](./screenshot.png)
 
 deploy link:
