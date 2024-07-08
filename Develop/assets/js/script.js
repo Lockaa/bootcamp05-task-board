@@ -42,7 +42,6 @@ function outputTasks() {
 
 
 // Todo: create a function to generate a unique task id
-
 function generateTaskId() {
     const min = Math.pow(10, 14);
     const max = Math.pow(10, 15) - 1;
