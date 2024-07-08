@@ -15,7 +15,7 @@ THEN the task is removed from the task board and will not be added back after re
 WHEN I refresh the page
 THEN the saved tasks persist
 
-![alt text](./screenshot.png)
+![alt text](./screenshot(1).png)
 
 deploy link:
 https://lockaa.github.io/module05-task-board/
