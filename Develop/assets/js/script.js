@@ -16,12 +16,12 @@ function outputTasks() {
     $done.empty();
     $inProgress.empty();
     $started.empty();
-    tasks.forEach(function(taskObj){//how the task gets added to the browser
+    tasks.forEach(function(taskObj){
         const $taskEl = $(`
             <article data-id='${taskObj.id}' class="bg-white border border-dark-subtle p-3 m-4">
                 <h5>Task Title: ${taskObj.title}</h5>
                 <p>Description: ${taskObj.info}</p>
-                <p>Due Date: ${taskObj.dueDate}</p>
+                <p>Due Date: ${taskObj.taskDate}</p>
                 <button class='btn bg-danger text-light'>Delete</button>
             </article>   
         `);
@@ -42,9 +42,12 @@ function outputTasks() {
 
 
 // Todo: create a function to generate a unique task id
+
 function generateTaskId() {
-    const min = Math.pow(10, 14);
-    const max = Math.pow(10, 15) - 1;
+    const min = Math.pow(10, 14); // Minimum 15-digit number
+    const max = Math.pow(10, 15) - 1; // Maximum 15-digit number
+    
+    // Generate a random number between min and max
     let randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     
     return randomNumber;
@@ -55,13 +58,13 @@ function createTaskCard() {
     const taskID = generateTaskId();
     const $taskTitle = $('#task-name');
     const $taskInfo = $('#description-text');
-    const $dueDate = $('#deadline');
+    const $taskDate = $('#deadline');
 
     const newTask = {
         id: taskID,
         title: $taskTitle.val(),
         info: $taskInfo.val(),
-        dueDate: $dueDate.val(),
+        taskDate: $taskDate.val(),
         done: false,
         inProgress: false,
         started: true
@@ -71,7 +74,7 @@ function createTaskCard() {
     localStorage.setItem('tasks', JSON.stringify(taskList));
     $taskTitle.val('');
     $taskInfo.val('');
-    $dueDate.val('');
+    $taskDate.val('');
     // to hide the modal after submission
     $('#formModal').modal('hide');
 
@@ -88,7 +91,6 @@ function handleDrop(eventObj, ui) {
     const task = tasks.find(function(taskObj){
         if (taskObj.id === articleID) return true;
     });
-    console.log(area);
     article.removeClass('started inProgress done');
     if (area.hasClass('started')) {
         task.started = true;
@@ -109,7 +111,6 @@ function handleDrop(eventObj, ui) {
         task.done = true;
         article.addClass('done');
     }
-    console.log(tasks);
     localStorage.setItem('tasks', JSON.stringify(tasks));
 
     area.append(article);
